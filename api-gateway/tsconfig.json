@@ -1,0 +1,28 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"target": "ESNext",
+		"lib": ["ES6"],
+		"allowJs": true,
+		"module": "CommonJS",
+		"rootDir": ".",
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"typeRoots": ["./src/types", "./node_modules/@types"],
+		"sourceMap": true,
+		"types": ["node", "express"],
+		"noImplicitAny": false,
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": ["*"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}
