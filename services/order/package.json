@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.10.1",
-    "@types/amqplib": "^0.10.4",
+    "@types/amqplib": "^0.10.5",
     "amqplib": "^0.10.3",
     "axios": "^1.6.7",
     "cors": "^2.8.5",
