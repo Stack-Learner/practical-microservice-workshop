@@ -1,7 +1,7 @@
 # practical-microservice-workshop
 
-<!-- Run kong and keycloak -->
+## Run Kong and Keycloak
 docker compose -f .\kong-docker-compose.yml up
 
-<!-- Run microservices -->
+## Run microservices dependency
 docker compose up 
