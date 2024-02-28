@@ -2,11 +2,13 @@ import prisma from '@/prisma';
 import { Request, Response, NextFunction } from 'express';
 
 const getProducts = async (
-	_req: Request,
+	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
+		console.log("😲Request Header",{userId: req.headers['x-user-id'], email:req.headers['x-user-email'] })
+
 		const products = await prisma.product.findMany({
 			select: {
 				id: true,

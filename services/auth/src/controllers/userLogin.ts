@@ -84,6 +84,7 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 			});
 		}
 
+		console.log("JWT_SECRET", process.env.JWT_SECRET)
 		// generate access token
 		const accessToken = jwt.sign(
 			{ userId: user.id, email: user.email, name: user.name, role: user.role },
