@@ -160,8 +160,8 @@ services:
       - KC_LOG_LEVEL=INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
       - KEYCLOAK_ENABLE_HTTPS=false
       - PROXY_ADDRESS_FORWARDING=true
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/demo/certs/localhostcrt.pem
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/demo/certs/localhostkey.pem
+      # - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/demo/certs/localhostcrt.pem
+      # - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/demo/certs/localhostkey.pem
     ports:
       - "8081:8080" # this is the http port
       - "8445:8443" # this is the https port
@@ -172,5 +172,5 @@ services:
     networks:
       - keycloak-net
     volumes:
-      - ./keys:/opt/keycloak/demo/certs
+      # - ./keys:/opt/keycloak/demo/certs
       - ./themes/custom-theme/theme:/opt/keycloak/themes
