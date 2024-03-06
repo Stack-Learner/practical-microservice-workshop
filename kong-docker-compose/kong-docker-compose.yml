@@ -42,7 +42,7 @@ services:
   #######################################
   kong-migration:
     build:
-      context: ./config
+      context: ../config
       dockerfile: Dockerfile
     command: kong migrations bootstrap
     networks:
@@ -62,7 +62,7 @@ services:
   #######################################
   kong:
     build:
-      context: ./config
+      context: ../config
       dockerfile: Dockerfile
     container_name: kong
     restart: on-failure
