@@ -61,6 +61,10 @@ class Oidc {
 
       kong.log.notice(`🥰🥰 Request sent to the Upstream server`);
 
+      // Set user data in headers
+      kong.service.request.set_header("X-User-ID", response.data.sid);
+      kong.service.request.set_header("X-User-Email", response.data.email);
+
       return;
     } catch (error) {
       const message = error.message || "Something Went Wrong!";

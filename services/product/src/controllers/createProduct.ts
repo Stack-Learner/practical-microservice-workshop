@@ -10,6 +10,7 @@ const createProduct = async (
 	next: NextFunction
 ) => {
 	try {
+		console.log("💖 User Information", req.headers["x-user-id"], req.headers["x-user-email"])
 		// Validate request body
 		const parsedBody = ProductCreateDTOSchema.safeParse(req.body);
 		if (!parsedBody.success) {

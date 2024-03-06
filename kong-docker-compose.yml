@@ -68,7 +68,7 @@ services:
     restart: on-failure
     networks:
       # kong-net:
-        # ipv4_address: 172.1.1.40
+      # ipv4_address: 172.1.1.40
       - kong-net
     environment:
       KONG_DATABASE: postgres
@@ -81,7 +81,7 @@ services:
       KONG_PLUGINSERVER_JS_SOCKET: /usr/local/kong/js_pluginserver.sock
       KONG_PLUGINSERVER_JS_START_CMD: /usr/local/bin/kong-js-pluginserver -v --plugins-directory /usr/local/kong/js-plugins
       KONG_PLUGINSERVER_JS_QUERY_CMD: /usr/local/bin/kong-js-pluginserver --plugins-directory /usr/local/kong/js-plugins --dump-all-plugins
-      KONG_PLUGINS: bundled,custom-auth,oidc
+      KONG_PLUGINS: bundled,oidc
     depends_on:
       - kong-database
       - kong-migration
@@ -124,53 +124,3 @@ services:
       - kong-database
     ports:
       - "1337:1337"
-
-  # Keycloak Auth Service and postgress database ------------------------------
-  keycloak-db:
-    image: postgres:9.6
-    volumes:
-      - keycloak-datastore:/var/lib/postresql/data
-    networks:
-      - keycloak-net
-    ports:
-      - "5436:5432"
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "keycloak"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=postgres
-      - KC_DB_URL_HOST=keycloak-db
-      - KC_DB_URL_DATABASE=keycloak
-      - KC_DB_USERNAME=keycloak
-      - KC_DB_PASSWORD=password
-      - KC_HEALTH_ENABLED=true
-      - KC_CACHE=ispn
-      - KC_LOG_LEVEL=INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
-      - KEYCLOAK_ENABLE_HTTPS=false
-      - PROXY_ADDRESS_FORWARDING=true
-      # - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/demo/certs/localhostcrt.pem
-      # - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/demo/certs/localhostkey.pem
-    ports:
-      - "8081:8080" # this is the http port
-      - "8445:8443" # this is the https port
-    command: start-dev
-    depends_on:
-      keycloak-db:
-        condition: service_healthy
-    networks:
-      - keycloak-net
-    volumes:
-      # - ./keys:/opt/keycloak/demo/certs
-      - ./themes/custom-theme/theme:/opt/keycloak/themes
