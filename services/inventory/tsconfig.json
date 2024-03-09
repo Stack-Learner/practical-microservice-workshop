@@ -18,9 +18,9 @@
 		"sourceMap": true,
 		"types": ["node", "express"],
 		"noImplicitAny": false,
-		"baseUrl": "./src",
+		"baseUrl": "./",
 		"paths": {
-			"@/*": ["*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": ["src/**/*"],
