@@ -18,7 +18,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.get('/health', (_req, res) => {
-	res.status(200).json({ status: 'Inventory is UP' });
+	res.status(200).json({ status: 'Inventory UP' });
 });
 
 // app.use((req, res, next) => {
