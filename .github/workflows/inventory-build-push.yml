@@ -1,0 +1,36 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    paths:
+      - 'services/inventory/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get commit hash
+        id: commit_hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+
+      - name: Build and push Cart service Docker image
+        run: |
+          cd services/cart
+          docker build \
+            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
+            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
+            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
+            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
+            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
+            -t $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }} \
+            .
+          docker push $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }}
