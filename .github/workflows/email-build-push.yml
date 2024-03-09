@@ -22,15 +22,15 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-      - name: Build and push Cart service Docker image
+      - name: Build and push Email service Docker image
         run: |
-          cd services/cart
+          cd services/email
           docker build \
-            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
-            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
-            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
+            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --build-arg SMTP_HOST="${{ secrets.SMTP_HOST }}" \
+            --build-arg SMTP_PORT="${{ secrets.SMTP_PORT }}" \
+            --build-arg DEFAULT_SENDER_EMAIL="${{ secrets.DEFAULT_SENDER_EMAIL }}" \
             --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
-            -t $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }} \
+            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
             .
-          docker push $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }}
+          docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
