@@ -39,7 +39,7 @@ app.get('/cart/clear', clearCart);
 
 // health check
 app.get('/health', (_req, res) => {
-	res.json({ message: `${serviceName} is running` });
+	res.json({ message: `${serviceName} is running successfully` });
 });
 
 // 404 handler
