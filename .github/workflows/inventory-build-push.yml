@@ -26,11 +26,6 @@ jobs:
         run: |
           cd services/cart
           docker build \
-            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
-            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
-            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
-            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
-            -t $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }} \
+            --build-arg DATABASE_URL=$DATABASE_URL \
             .
-          docker push $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }}
+          docker push $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }}
