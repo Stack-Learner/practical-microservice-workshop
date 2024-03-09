@@ -22,10 +22,12 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-      - name: Build and push Cart service Docker image
+      - name: Build and push Inventory service Docker image
         run: |
           cd services/inventory
           docker build \
-            --build-arg DATABASE_URL=$DATABASE_URL \
+            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
+            -t $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }}
