@@ -27,10 +27,10 @@ jobs:
           cd services/order
           docker build \
             --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --build-arg CART_SERVICE = "${{ secrets.CART_SERVICE }}" \
-            --build-arg EMAIL_SERVICE = "${{ secrets.EMAIL_SERVICE }}" \
-            --build-arg PRODUCT_SERVICE = "${{ secrets.PRODUCT_SERVICE }}" \
-            --build-arg QUEUE_URL = "${{ secrets.QUEUE_URL }}" \
+            --build-arg CART_SERVICE="${{ secrets.CART_SERVICE }}" \
+            --build-arg EMAIL_SERVICE="${{ secrets.EMAIL_SERVICE }}" \
+            --build-arg PRODUCT_SERVICE="${{ secrets.PRODUCT_SERVICE }}" \
+            --build-arg QUEUE_URL="${{ secrets.QUEUE_URL }}" \
             -t $DOCKER_USERNAME/order:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/order:${{ steps.commit_hash.outputs.hash }}
