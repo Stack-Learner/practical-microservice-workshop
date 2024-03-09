@@ -13,6 +13,9 @@ RUN yarn install --production
 # Copy the rest of the application code to the working directory
 COPY . .
 
+# Install TypeScript globally
+RUN yarn global add typescript
+
 # Run the Yarn build script (adjust this based on your project's structure)
 RUN yarn build
 
