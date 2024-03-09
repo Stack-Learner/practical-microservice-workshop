@@ -1,5 +1,5 @@
 # Use a lightweight Node.js base image suitable for production
-FROM node:20-alpine as production
+FROM node:20-alpine
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -8,13 +8,11 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 # Install only production dependencies
-RUN yarn install --production
+RUN yarn install 
 
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Install TypeScript globally
-RUN yarn global add typescript
 
 # Run the Yarn build script (adjust this based on your project's structure)
 RUN yarn build
