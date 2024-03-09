@@ -24,7 +24,7 @@ jobs:
 
       - name: Build and push Cart service Docker image
         run: |
-          cd services/cart
+          cd services/inventory
           docker build \
             --build-arg DATABASE_URL=$DATABASE_URL \
             .
