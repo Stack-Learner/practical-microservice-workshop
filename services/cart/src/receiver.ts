@@ -5,7 +5,7 @@ const receiveFromQueue = async (
 	queue: string,
 	callback: (message: string) => void
 ) => {
-	const connection = await amqp.connect('amqp://localhost');
+	const connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
 	const channel = await connection.createChannel();
 
 	const exchange = 'order';
