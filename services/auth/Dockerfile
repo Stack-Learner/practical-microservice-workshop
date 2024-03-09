@@ -5,7 +5,7 @@ FROM node:20-alpine
 WORKDIR /usr/src/app
 
 # Copy only the package.json and yarn.lock files first to leverage Docker cache
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # Install only production dependencies
 RUN yarn install 
