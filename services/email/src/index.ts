@@ -13,7 +13,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.get('/health', (_req, res) => {
-	res.status(200).json({ status: 'UP and Running and working' });
+	res.status(200).json({ status: 'UP and Running and' });
 });
 
 // app.use((req, res, next) => {

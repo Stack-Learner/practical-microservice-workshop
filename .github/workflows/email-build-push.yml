@@ -1,71 +1,58 @@
-# .github/workflows/build-and-push-and-update-email.yaml
-name: Build, Push, and Update Kubernetes Config - Email Service
+# .github/workflows/update-k8s-config-email.yaml
+name: Update Kubernetes Config - Email Service
 
 on:
-  push:
-    paths:
-      - 'services/email/**'
   workflow_run:
-    workflows:
-      - "Build and Push Docker Image - Email Service"
+    workflows: ["Build and Push Docker Image - Email Service"]
     types:
       - completed
 
 jobs:
-  build-and-push:
+  update-k8s-config:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Provide the personal access token (PAT) for authentication
+          token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Get commit hash
-        id: commit_hash
-        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      - name: Get commit hash from Docker image workflow
+        id: get_commit_hash
+        run: echo "::set-output name=hash::$(cat $GITHUB_EVENT_PATH | jq -r '.workflow_run.head_commit.id')"
 
-      - name: Login to Docker Hub
-        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-
-      - name: Build and push Email service Docker image
+      - name: Fetch Kubernetes configurations from pmw-k8s-configs repository
         run: |
-          cd services/email
-          docker build \
-            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
-            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
-            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
-            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
-            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} .
-          docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
-
-      - name: Trigger Kubernetes update workflow
-        if: success()
-        run: |
-          # Fetch Kubernetes configurations from pmw-k8s-configs repository
+          # Clone the repository containing Kubernetes configurations
           git clone https://github.com/Stack-Learner/pmw-k8s-configs.git
           cd pmw-k8s-configs/email-service
 
-          # Check if there are changes to commit
-          if [[ -n $(git status -s) ]]; then
-            # Update deployment file for the email service
-            sed -i "s|imranstacklearner/email:{{ COMMIT_HASH }}|imranstacklearner/email:${{ steps.commit_hash.outputs.hash }}|" email-service/email-deployment.yaml
-          
-            # Stage the modified file for commit
-            git add email-service/email-deployment.yaml
+          # Print the current working directory and list its contents for debugging
+          pwd
+          ls -la
 
-            # Configure Git user information for the commit
-            git config user.email "actions@github.com"
-            git config user.name "GitHub Actions"
+          # Print the contents of email-deployment.yaml before sed for debugging
+          cat email-deployment.yaml
+
+          # Update deployment file for the email service
+          sed -i "s|imranstacklearner/email:{{ COMMIT_HASH }}|imranstacklearner/email:${{ steps.get_commit_hash.outputs.hash }}|" email-deployment.yaml
           
-            # Commit the changes with a message
-            git commit -m "Update image tag to ${{ steps.commit_hash.outputs.hash }}"
+          # Print the contents of email-deployment.yaml after sed for debugging
+          cat email-deployment.yaml
+
+          # Stage the modified file for commit
+          git add email-deployment.yaml
+
+          # Configure Git user information for the commit
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           
-            # Push the changes back to the repository with authentication
-            git push
-          else
-            echo "No changes to commit."
-          fi
+          # Commit the changes with a message
+          git commit -m "Update image tag to ${{ steps.get_commit_hash.outputs.hash }}"
+          
+          # Print git status for debugging
+          git status
+
+          # Push the changes back to the repository with authentication
+          git push
