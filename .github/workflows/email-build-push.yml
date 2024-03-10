@@ -1,10 +1,14 @@
-# .github/workflows/build-and-push-email.yaml
-name: Build and Push Docker Image - Email Service
+# .github/workflows/build-and-push-and-update-email.yaml
+name: Build, Push, and Update Kubernetes Config - Email Service
 
 on:
   push:
     paths:
       - 'services/email/**'
+  workflow_run:
+    workflows: ["Build and Push Docker Image - Email Service"]
+    types:
+      - completed
 
 jobs:
   build-and-push:
@@ -12,6 +16,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -33,8 +38,7 @@ jobs:
             --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
             --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
             --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
-            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
-            .
+            -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
 
       - name: Trigger Kubernetes update workflow
@@ -43,3 +47,25 @@ jobs:
         with:
           workflow: "Update Kubernetes Config - Email Service"
           token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Fetch Kubernetes configurations from pmw-k8s-configs repository
+        run: |
+          # Clone the repository containing Kubernetes configurations
+          git clone https://github.com/Stack-Learner/pmw-k8s-configs.git
+          cd pmw-k8s-configs
+
+          # Update deployment file for the email service
+          sed -i "s|imranstacklearner/email:{{ COMMIT_HASH }}|imranstacklearner/email:${{ steps.commit_hash.outputs.hash }}|" email-service/email-deployment.yaml
+          
+          # Stage the modified file for commit
+          git add email-service/email-deployment.yaml
+
+          # Configure Git user information for the commit
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          
+          # Commit the changes with a message
+          git commit -m "Update image tag to ${{ steps.commit_hash.outputs.hash }}"
+          
+          # Push the changes back to the repository with authentication
+          git push
