@@ -40,13 +40,13 @@ jobs:
             --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
             -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
-          
+
       - name: Trigger Kubernetes update workflow
         if: success()
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
-            https://api.github.com/repos/Stack-Learner/other-repo/actions/workflows/update-k8s-config-email.yaml/dispatches \
+            https://api.github.com/repos/Stack-Learner/pmw-k8s-configs/actions/workflows/update-k8s-config-email.yaml/dispatches \
             -d '{"ref": "main"}'
 
