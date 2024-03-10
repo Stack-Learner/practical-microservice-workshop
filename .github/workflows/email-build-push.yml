@@ -41,15 +41,3 @@ jobs:
             -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
 
-      - name: Trigger Kubernetes update workflow
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            const response = await github.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow: 'Update Kubernetes Config - Email Service',
-            });
-            console.log(response);
