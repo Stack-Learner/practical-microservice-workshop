@@ -1,4 +1,5 @@
-name: Build and Push Docker Images
+# .github/workflows/build-and-push-email.yaml
+name: Build and Push Docker Image - Email Service
 
 on:
   push:
@@ -11,6 +12,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,11 +28,18 @@ jobs:
         run: |
           cd services/email
           docker build \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --build-arg SMTP_HOST="${{ secrets.SMTP_HOST }}" \
-            --build-arg SMTP_PORT="${{ secrets.SMTP_PORT }}" \
-            --build-arg DEFAULT_SENDER_EMAIL="${{ secrets.DEFAULT_SENDER_EMAIL }}" \
+            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
+            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
+            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
+            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
             --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
             -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
+
+      - name: Trigger Kubernetes update workflow
+        if: success()
+        uses: actions/workflow-run-trigger@v1
+        with:
+          workflow: "Update Kubernetes Config - Email Service"
+          token: ${{ secrets.PAT_TOKEN }}
