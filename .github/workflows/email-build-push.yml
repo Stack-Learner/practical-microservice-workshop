@@ -1,4 +1,3 @@
-# .github/workflows/update-k8s-config-email.yaml
 name: Update Kubernetes Config - Email Service
 
 on:
@@ -15,7 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Provide the personal access token (PAT) for authentication
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Get commit hash from Docker image workflow
@@ -24,35 +22,25 @@ jobs:
 
       - name: Fetch Kubernetes configurations from pmw-k8s-configs repository
         run: |
-          # Clone the repository containing Kubernetes configurations
           git clone https://github.com/Stack-Learner/pmw-k8s-configs.git
           cd pmw-k8s-configs/email-service
 
-          # Print the current working directory and list its contents for debugging
           pwd
           ls -la
 
-          # Print the contents of email-deployment.yaml before sed for debugging
           cat email-deployment.yaml
 
-          # Update deployment file for the email service
           sed -i "s|imranstacklearner/email:{{ COMMIT_HASH }}|imranstacklearner/email:${{ steps.get_commit_hash.outputs.hash }}|" email-deployment.yaml
           
-          # Print the contents of email-deployment.yaml after sed for debugging
           cat email-deployment.yaml
 
-          # Stage the modified file for commit
           git add email-deployment.yaml
 
-          # Configure Git user information for the commit
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           
-          # Commit the changes with a message
           git commit -m "Update image tag to ${{ steps.get_commit_hash.outputs.hash }}"
           
-          # Print git status for debugging
           git status
 
-          # Push the changes back to the repository with authentication
           git push
