@@ -23,11 +23,11 @@ RUN npx prisma generate
 RUN yarn build
 
 # Expose the port your app is running on
-EXPOSE 5002
+EXPOSE 4000
 
 # Set environment variables
-ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5433/product_db?schema=public"
-ENV DATABASE_URL=$DATABASE_URL
+ARG USER_DATABASE_URL
+ENV USER_DATABASE_URL=$USER_DATABASE_URL
 
 # Command to run your application in production mode
 CMD ["yarn", "start"]
