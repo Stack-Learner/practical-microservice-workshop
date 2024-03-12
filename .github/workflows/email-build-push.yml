@@ -33,20 +33,22 @@ jobs:
         run: |
           cd services/email
           docker build \
-            --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
-            --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
-            --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
-            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
-            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
+            --build-arg MAIL_DATABASE_URL=$MAIL_DATABASE_URL \
+            --build-arg SMTP_HOST=$SMTP_HOST \
+            --build-arg SMTP_PORT=$SMTP_PORT \
+            --build-arg GOOGLE_SMTP_USER=$GOOGLE_SMTP_USER \
+            --build-arg GOOGLE_SMTP_PASSWORD=$GOOGLE_SMTP_PASSWORD \
+            --build-arg DEFAULT_SENDER_EMAIL=$DEFAULT_SENDER_EMAIL \
+            --build-arg RABBITMQ_URL=$RABBITMQ_URL \           
             -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
 
-      - name: Trigger Kubernetes update workflow
-        if: success()
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
-            https://api.github.com/repos/Stack-Learner/pmw-k8s-configs/actions/workflows/update-k8s-config-email.yaml/dispatches \
-            -d '{"ref": "main"}'
+      # - name: Trigger Kubernetes update workflow
+      #   if: success()
+      #   run: |
+      #     curl -X POST \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
+      #       https://api.github.com/repos/Stack-Learner/pmw-k8s-configs/actions/workflows/update-k8s-config-email.yaml/dispatches \
+      #       -d '{"ref": "main"}'
 
