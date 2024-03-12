@@ -10,4 +10,4 @@ export const EMAIL_SERVICE =
 export const PRODUCT_SERVICE =
 	process.env.PRODUCT_SERVICE_URL || 'http://localhost:4001';
 
-export const QUEUE_URL = process.env.QUEUE_URL || 'amqp://localhost';
+export const QUEUE_URL = process.env.RABBITMQ_URL || 'amqp://localhost';

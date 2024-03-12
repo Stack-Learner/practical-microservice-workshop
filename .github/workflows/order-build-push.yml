@@ -26,11 +26,11 @@ jobs:
         run: |
           cd services/order
           docker build \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --build-arg CART_SERVICE="${{ secrets.CART_SERVICE }}" \
-            --build-arg EMAIL_SERVICE="${{ secrets.EMAIL_SERVICE }}" \
-            --build-arg PRODUCT_SERVICE="${{ secrets.PRODUCT_SERVICE }}" \
-            --build-arg QUEUE_URL="${{ secrets.QUEUE_URL }}" \
+            --build-arg ORDER_DATABASE_URL="${{ secrets.ORDER_DATABASE_URL }}" \
+            --build-arg CART_SERVICE_URL="${{ secrets.CART_SERVICE_URL }}" \
+            --build-arg EMAIL_SERVICE_URL="${{ secrets.EMAIL_SERVICE_URL }}" \
+            --build-arg PRODUCT_SERVICE_URL="${{ secrets.PRODUCT_SERVICE_URL }}" \
+            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
             -t $DOCKER_USERNAME/order:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/order:${{ steps.commit_hash.outputs.hash }}
