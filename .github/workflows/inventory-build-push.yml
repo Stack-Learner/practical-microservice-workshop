@@ -26,8 +26,7 @@ jobs:
         run: |
           cd services/inventory
           docker build \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
+            --build-arg INVENTORY_DATABASE_URL="${{ secrets.INVENTORY_DATABASE_URL }}" \
             -t $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/inventory:${{ steps.commit_hash.outputs.hash }}

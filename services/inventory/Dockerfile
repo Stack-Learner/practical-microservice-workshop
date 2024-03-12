@@ -26,8 +26,8 @@ RUN yarn build
 EXPOSE 4005
 
 # Set environment variables from .env file
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
+ARG INVENTORY_DATABASE_URL
+ENV INVENTORY_DATABASE_URL=$INVENTORY_DATABASE_URL
 
 
 # Command to run your application in production mode
