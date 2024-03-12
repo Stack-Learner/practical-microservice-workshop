@@ -23,7 +23,7 @@ RUN npx prisma generate
 RUN yarn build
 
 # Expose the port your app is running on
-EXPOSE 4005
+EXPOSE 4002
 
 # Set environment variables from .env file
 ARG INVENTORY_DATABASE_URL
