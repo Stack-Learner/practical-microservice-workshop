@@ -26,7 +26,7 @@ jobs:
         run: |
           cd services/auth
           docker build \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --build-arg DATABASE_URL="${{ secrets.AUTH_DATABASE_URL }}" \
             --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
             --build-arg EMAIL_SERVICE_URL="${{ secrets.EMAIL_SERVICE_URL }}" \
             --build-arg USER_SERVICE_URL="${{ secrets.USER_SERVICE_URL }}" \
