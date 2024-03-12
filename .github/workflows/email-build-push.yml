@@ -1,6 +1,4 @@
-# .github/workflows/build-and-push-email.yaml
 name: Build and Push Docker Image - Email Service
-
 on:
   push:
     paths:
@@ -34,7 +32,7 @@ jobs:
             --build-arg GOOGLE_SMTP_USER=$GOOGLE_SMTP_USER \
             --build-arg GOOGLE_SMTP_PASSWORD=$GOOGLE_SMTP_PASSWORD \
             --build-arg DEFAULT_SENDER_EMAIL=$DEFAULT_SENDER_EMAIL \
-            --build-arg RABBITMQ_URL=$RABBITMQ_URL \           
+            --build-arg RABBITMQ_URL=$RABBITMQ_URL \
             -t $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }} \
             .
           docker push $DOCKER_USERNAME/email:${{ steps.commit_hash.outputs.hash }}
