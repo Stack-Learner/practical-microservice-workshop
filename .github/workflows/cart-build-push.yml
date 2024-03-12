@@ -29,7 +29,7 @@ jobs:
             --build-arg REDIS_HOST="${{ secrets.REDIS_HOST }}" \
             --build-arg REDIS_PORT="${{ secrets.REDIS_PORT }}" \
             --build-arg CART_TTL="${{ secrets.CART_TTL }}" \
-            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE }}" \
+            --build-arg INVENTORY_SERVICE="${{ secrets.INVENTORY_SERVICE_URL }}" \
             --build-arg RABBITMQ_URL="${{ secrets.RABBITMQ_URL }}" \
             -t $DOCKER_USERNAME/cart:${{ steps.commit_hash.outputs.hash }} \
             .
