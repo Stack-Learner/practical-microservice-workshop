@@ -26,9 +26,9 @@ RUN yarn build
 EXPOSE 5002
 
 # Set environment variables
-ARG DATABASE_URL="postgresql://postgres:postgres@localhost:5433/product_db?schema=public"
-ARG INVENTORY_SERVICE_URL="http://localhost:5000"
-ENV DATABASE_URL=$DATABASE_URL
+ARG PRODUCT_DATABASE_URL
+ARG INVENTORY_SERVICE_URL
+ENV PRODUCT_DATABASE_URL=$PRODUCT_DATABASE_URL
 ENV INVENTORY_SERVICE_URL=$INVENTORY_SERVICE_URL
 
 # Command to run your application in production mode

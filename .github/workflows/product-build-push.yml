@@ -26,7 +26,7 @@ jobs:
         run: |
           cd services/product
           docker build \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --build-arg PRODUCT_DATABASE_URL="${{ secrets.PRODUCT_DATABASE_URL }}" \
             --build-arg INVENTORY_SERVICE_URL="${{ secrets.INVENTORY_SERVICE_URL }}" \
             -t $DOCKER_USERNAME/product:${{ steps.commit_hash.outputs.hash }} \
             .
