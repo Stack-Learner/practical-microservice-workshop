@@ -23,7 +23,7 @@ RUN npx prisma generate
 RUN yarn build
 
 # Expose the port your app is running on
-EXPOSE 5002
+EXPOSE 4001
 
 # Set environment variables
 ARG PRODUCT_DATABASE_URL
