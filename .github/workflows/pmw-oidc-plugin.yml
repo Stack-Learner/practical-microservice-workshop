@@ -25,5 +25,5 @@ jobs:
 
       - name: Build and push Kong OIDC Custom Plugin Docker image
         run: |
-          docker build -t $DOCKER_USERNAME/kong-oidc-custom-plugin:${{ steps.commit_hash.outputs.hash }} . /
+          docker build -t $DOCKER_USERNAME/kong-oidc-custom-plugin:${{ steps.commit_hash.outputs.hash }} config/
           docker push $DOCKER_USERNAME/kong-oidc-custom-plugin:${{ steps.commit_hash.outputs.hash }}
