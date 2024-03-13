@@ -1,0 +1,29 @@
+name: Build and Push Docker Image for Kong OIDC Custom Plugin
+
+on:
+  push:
+    paths:
+      - 'config/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get commit hash
+        id: commit_hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+
+      - name: Build and push Kong OIDC Custom Plugin Docker image
+        run: |
+          docker build -t $DOCKER_USERNAME/kong-oidc-custom-plugin:${{ steps.commit_hash.outputs.hash }} . /
+          docker push $DOCKER_USERNAME/kong-oidc-custom-plugin:${{ steps.commit_hash.outputs.hash }}
